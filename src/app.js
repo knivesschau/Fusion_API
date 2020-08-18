@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const {NODE_ENV} = require('./config');
+const fuseRecipes = require('./fused_recipes/recipes-router');
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use(cors());
 app.get('/', (req, res) => {
     res.send('Welcome to the Fusion API!')
 });
+
+app.use('/api/recipes', fuseRecipes);
 
 app.use(function errorHandler(error, req, res, next) {
     let response;
