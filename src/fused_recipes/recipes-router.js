@@ -29,9 +29,29 @@ fuseRouter
         .catch(next);
     })
     .post(jsonParser, (req, res, next) => {
-        const {fused_name, fused_ingredients, fuse_steps, base_cuisine, fuse_cuisine} = req.body;
-        const newRecipe = {fused_name, fused_ingredients, fuse_steps, base_cuisine, fuse_cuisine}; 
-    })
+        const {fused_name, fuse_ingredients, fuse_steps, base_cuisine, fuse_cuisine} = req.body;
+        const newRecipe = {fused_name, fuse_ingredients, fuse_steps, base_cuisine, fuse_cuisine}; 
+
+        for (const [key, value] of Object.entries(newRecipe)) {
+            if (value == null) {
+                return res.status(400).json({
+                    error: {message: `Missing '${key}' entry in request body.`}
+                });
+            }
+        }
+
+        FuseService.insertRecipe(
+            req.app.get('db'),
+            newRecipe
+        )
+            .then(recipe => {
+                res
+                    .status(201)
+                    .location(path.posix.join(req.originalUrl, `/${recipe.fusion_id}`))
+                    .json(recipe)
+            })
+            .catch(next);
+    });
 
 fuseRouter
     .route('/:fused_id')

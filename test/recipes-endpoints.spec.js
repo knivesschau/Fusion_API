@@ -1,7 +1,6 @@
 const {expect} = require('chai');
 const knex = require('knex');
 const app = require('../src/app');
-const FuseService = require('../src/fused_recipes/recipes-service');
 const {makeRecipesArray} = require('./recipe.fixtures');
 const {makeCuisinesArray} = require('./cuisine.fixtures');
 const supertest = require('supertest');
@@ -98,8 +97,72 @@ describe('fused recipes endpoints', function() {
         });
     });
 
-    describe(`POST /api/recipes/:recipe_id`, () => {
+    describe(`POST /api/recipes/:recipe_id`, () => {        
+        this.retries(3);
 
+        const testCuisines = makeCuisinesArray();
+
+        beforeEach('insert cuisine styles', () => {
+            return db
+                .into('cuisines')
+                .insert(testCuisines)
+        });
+
+        const newRecipe = {
+            fused_name: 'Potato Grilled Cheese',
+            fuse_ingredients: JSON.stringify(['1 lb potatoes, cubed', '2 tomatoes, diced', '3/4 cup salsa', '4 cups lorem', '1/2 teaspoon ipsum']),
+            fuse_steps: JSON.stringify(['In a pan, add potatoes and ipsum.', 'Set potatoes aside, season to taste.', 'Lorem ipsum sit dolor amet.', 'Amet lorem ipsum 1/2 servings.']),
+            base_cuisine: 3,
+            fuse_cuisine: 1
+        };
+
+        it ('Creates a fused recipe, responds 201 and with the recipe created', () => {
+            return supertest(app)
+                .post('/api/recipes')
+                .send(newRecipe)
+                .expect(201)
+                .expect(res => {
+                    expect(res.body.fused_name).to.eql(newRecipe.fused_name);
+                    expect(res.body.fuse_ingredients).to.eql(newRecipe.fuse_ingredients);
+                    expect(res.body.fuse_steps).to.eql(newRecipe.fuse_steps);
+                    expect(res.body.base_cuisine).to.eql(newRecipe.base_cuisine);
+                    expect(res.body.fuse_cuisine).to.eql(newRecipe.fuse_cuisine);
+                    expect(res.body).to.have.property('fused_id');
+                    expect(res.headers.location).to.eql(`/api/recipes/${res.body.id}`)
+
+                    const expected = new Date().toLocaleString();
+                    const actual = new Date(res.body.date_created).toLocaleString();
+
+                    expect(actual).to.eql(expected);
+                })
+                .then(postRes => {
+                    supertest(app)
+                        .get(`/api/recipes/${postRes.body.fused_id}`)
+                        .expect(postRes.body)
+                });
+        });
+
+        const requiredFields = ['fused_name', 'fuse_ingredients', 'fuse_steps', 'base_cuisine'];
+
+        requiredFields.forEach(field => {
+            const newRecipe = {
+                fused_name: 'Potato Grilled Cheese',
+                fuse_ingredients: JSON.stringify(['1 lb potatoes, cubed', '2 tomatoes, diced', '3/4 cup salsa', '4 cups lorem', '1/2 teaspoon ipsum']),
+                fuse_steps: JSON.stringify(['In a pan, add potatoes and ipsum.', 'Set potatoes aside, season to taste.', 'Lorem ipsum sit dolor amet.', 'Amet lorem ipsum 1/2 servings.']),
+                base_cuisine: 3
+            };
+
+            it (`Responds with 400 and an error message when the ${field} is missing`, () => {
+                delete newRecipe[field]
+
+                return supertest(app)
+                    .post('/api/recipes')
+                    .send(newRecipe)
+                    .expect(400, {
+                        error: {message: `Missing '${field}' entry in request body.`}
+                    });
+            });
+        });
     });
 
     describe (`DELETE /api/recipes/:recipe_id`, () => {
