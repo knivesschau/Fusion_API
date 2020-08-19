@@ -8,7 +8,7 @@ const FuseService = {
         return knex
             .from('fused_recipes')
             .select('*')
-            .where({fused_id: fused_id})
+            .where('fused_id', fused_id)
             .first();
     }
 }

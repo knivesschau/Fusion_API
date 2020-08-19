@@ -39,9 +39,7 @@ describe('fused recipes endpoints', function() {
         context(`Given there are fused recipes in the database`, () => {
             const testRecipes = makeRecipesArray();
             const testCuisines = makeCuisinesArray();
-
-            const firstRecipe = testRecipes[0];
-
+            
             beforeEach('insert cuisine styles', () => {
                 return db
                     .into('cuisines')
@@ -51,13 +49,13 @@ describe('fused recipes endpoints', function() {
             beforeEach('insert fused recipes', () => {
                 return db
                     .into('fused_recipes')
-                    .insert(firstRecipe)
+                    .insert(testRecipes)
             });
 
-            it.only (`GET /api/recipes responds 200 and with all saved recipes`, () => {
+            it ('GET /api/recipes responds 200 and with all saved recipes', () => {
                 return supertest(app)
                     .get('/api/recipes')
-                    .expect(200, firstRecipe)
+                    .expect(200, testRecipes)
             });
         });
     });
@@ -74,7 +72,29 @@ describe('fused recipes endpoints', function() {
         });
 
         context(`Given there are fused recipes in the database`, () => {
+            const testRecipes = makeRecipesArray();
+            const testCuisines = makeCuisinesArray();
 
+            beforeEach('insert cuisine styles', () => {
+                return db
+                    .into('cuisines')
+                    .insert(testCuisines)
+            });
+
+            beforeEach('insert fused recipes', () => {
+                return db
+                    .into('fused_recipes')
+                    .insert(testRecipes)
+            });
+
+            it ('GET /recipes/:recipe_id responds with 200 and the specific recipe', () => {
+                const recipeId = 2;
+                const expectedRecipe = testRecipes[recipeId - 1];
+                
+                return supertest(app)
+                    .get(`/api/recipes/${recipeId}`)
+                    .expect(200, expectedRecipe)
+            });
         });
     });
 });

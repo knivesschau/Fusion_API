@@ -7,7 +7,8 @@ const fuseRouter = express.Router();
 const jsonParser = express.json();
 
 const serializeRecipeEntry = recipe => ({
-    fused_id: recipe.id,
+    fused_id: recipe.fused_id,
+    fused_name: recipe.fused_name,
     date_created: recipe.date_created,
     date_modified: recipe.date_modified,
     fuse_ingredients: xss(recipe.fuse_ingredients),
