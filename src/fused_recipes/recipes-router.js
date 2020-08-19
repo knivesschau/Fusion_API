@@ -24,10 +24,14 @@ fuseRouter
             req.app.get('db')
         )
         .then(recipes => {
-            res.json(recipes)
+            res.json(recipes);
         })
-        .catch(next)
-    });
+        .catch(next);
+    })
+    .post(jsonParser, (req, res, next) => {
+        const {fused_name, fused_ingredients, fuse_steps, base_cuisine, fuse_cuisine} = req.body;
+        const newRecipe = {fused_name, fused_ingredients, fuse_steps, base_cuisine, fuse_cuisine}; 
+    })
 
 fuseRouter
     .route('/:fused_id')
@@ -39,7 +43,7 @@ fuseRouter
             .then(recipe => {
                 if (!recipe) {
                     return res.status(404).json({
-                        error: {message:`Recipe does not exist.`}
+                        error: {message: `Recipe does not exist.`}
                     });
                 }
                 res.recipe = recipe;
@@ -48,8 +52,17 @@ fuseRouter
             .catch(next);
     })
     .get((req, res, next) => {
-        res.json(serializeRecipeEntry(res.recipe))
-    });
-
+        res.json(serializeRecipeEntry(res.recipe));
+    })
+    .delete((req, res, next) => {
+        FuseService.deleteRecipe(
+            req.app.get('db'),
+            req.params.fused_id
+        )
+            .then(() => {
+                res.status(204).end();
+            })
+            .catch(next);
+    })
 
 module.exports = fuseRouter; 

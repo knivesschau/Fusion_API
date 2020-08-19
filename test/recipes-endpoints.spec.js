@@ -97,4 +97,55 @@ describe('fused recipes endpoints', function() {
             });
         });
     });
+
+    describe(`POST /api/recipes/:recipe_id`, () => {
+
+    });
+
+    describe (`DELETE /api/recipes/:recipe_id`, () => {
+        context(`Given there are fused recipes in the database`, () => {
+            it ('Responds with 404', () => {
+                const recipeId = 2468;
+
+                return supertest(app)
+                    .get(`/api/recipes/${recipeId}`)
+                    .expect(404, { error: {message: `Recipe does not exist.`}})
+            });
+        });
+
+        context(`Given there are recipes in the database`, () => {
+            const testRecipes = makeRecipesArray();
+            const testCuisines = makeCuisinesArray();
+
+            beforeEach('insert cuisine styles', () => {
+                return db
+                    .into('cuisines')
+                    .insert(testCuisines)
+            });
+
+            beforeEach('insert fused recipes', () => {
+                return db
+                    .into('fused_recipes')
+                    .insert(testRecipes)
+            });
+
+            it ('Responds with 204 and removes the recipe', () => {
+                const idToRemove = 3; 
+                const expectedRecipe = testRecipes.filter(recipe => recipe.fused_id !== idToRemove);
+
+                return supertest(app)
+                    .delete(`/api/recipes/${idToRemove}`)
+                    .expect(204)
+                    .then(res => {
+                        supertest(app)
+                            .get('/api/recipes')
+                            .expect(expectedRecipe)
+                    });
+            });
+        });
+    });
+
+    describe(`PATCH /api/recipes/:recipe_id`, () => {
+
+    });
 });
