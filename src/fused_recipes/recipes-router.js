@@ -85,14 +85,14 @@ fuseRouter
             .catch(next);
     })
     .patch(jsonParser, (req, res, next) => {
-        const {fuse_name, fuse_ingredients, fuse_steps} = req.body;
-        const recipeToUpdate = {fuse_name, fuse_ingredients, fuse_steps};
+        const {fused_name, fuse_ingredients, fuse_steps} = req.body;
+        const recipeToUpdate = {fused_name, fuse_ingredients, fuse_steps};
         const numberOfValues = Object.values(recipeToUpdate).filter(Boolean).length;
 
         if (numberOfValues === 0) {
             return res.status(400).json({
                 error: {
-                    message: `Request body must contain updates to 'fuse_name', 'fuse_ingredients', or 'fuse_steps'.`
+                    message: `Request body must contain updates to 'fused_name', 'fuse_ingredients', or 'fuse_steps'.`
                 }
             });
         }

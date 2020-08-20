@@ -260,6 +260,77 @@ describe('fused recipes endpoints', function() {
         context(`Given there are fused recipes in the database`, () => {
             const testRecipes = makeRecipesArray();
             const testCuisines = makeCuisinesArray();
-        })
+
+            beforeEach('insert cuisine styles', () => {
+                return db
+                    .into('cuisines')
+                    .insert(testCuisines)
+            });
+
+            beforeEach('insert fused recipes', () => {
+                return db
+                    .into('fused_recipes')
+                    .insert(testRecipes)
+            });
+
+            it ('Responds with 204 and updates the recipe', () => {
+                const idToUpdate = 2;
+
+                const updatedRecipe = {
+                    fused_name: "Patch with Potatoes",
+                    fuse_ingredients: JSON.stringify(['4 eggs', '1/2 cup of milk', '4 cups water', '2 pounds of PATCH', '1/2 cup of debugging']),
+                    fuse_steps: JSON.stringify(['In a pan, add eggs, PATCH, and debugging.', 'Once cooked, add water and milk and bring to a boil. Simmer for 35 minutes.', 'Season to taste.'])
+                };
+
+                const expectedEntry = {
+                    ...testRecipes[idToUpdate - 1],
+                    ...updatedRecipe
+                };
+
+                return supertest(app)
+                    .patch(`/api/recipes/${idToUpdate}`)
+                    .send(updatedRecipe)
+                    .expect(204)
+                    .then(res => {
+                        supertest(app)
+                            .get(`/get/recipes/${idToUpdate}`)
+                            .expect(expectedEntry)
+                    });
+            });
+
+            it ('Responds with 400 when no required fields are sent', () => {
+                const idToUpdate = 2;
+
+                return supertest(app)
+                    .patch(`/api/recipes/${idToUpdate}`)
+                    .send({badField: 'bar'})
+                    .expect(400, {
+                        error: {
+                            message: `Request body must contain updates to 'fused_name', 'fuse_ingredients', or 'fuse_steps'.`
+                        }
+                    });
+            });
+
+            it ('Responds with 204 when updating only a subset of fields', () => {
+                const idToUpdate = 2;
+
+                const updateRecipe = {
+                    fused_name: "Potatoes and Patch Gravy"
+                };
+
+                return supertest(app)
+                    .patch(`/api/recipes/${idToUpdate}`)
+                    .send({
+                        ...updateRecipe,
+                        ignore: 'Blah'
+                    })
+                    .expect(204)
+                    .then(res => {
+                        supertest(app)
+                            .get(`/api/recipes/${idToUpdate}`)
+                            .expect(updateRecipe)
+                    });
+            });
+        });
     });
 });
