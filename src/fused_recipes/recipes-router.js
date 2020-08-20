@@ -8,7 +8,7 @@ const jsonParser = express.json();
 
 const serializeRecipeEntry = recipe => ({
     fused_id: recipe.fused_id,
-    fused_name: recipe.fused_name,
+    fused_name: xss(recipe.fused_name),
     date_created: recipe.date_created,
     date_modified: recipe.date_modified,
     fuse_ingredients: xss(recipe.fuse_ingredients),
@@ -84,5 +84,28 @@ fuseRouter
             })
             .catch(next);
     })
+    .patch(jsonParser, (req, res, next) => {
+        const {fuse_name, fuse_ingredients, fuse_steps} = req.body;
+        const recipeToUpdate = {fuse_name, fuse_ingredients, fuse_steps};
+        const numberOfValues = Object.values(recipeToUpdate).filter(Boolean).length;
+
+        if (numberOfValues === 0) {
+            return res.status(400).json({
+                error: {
+                    message: `Request body must contain updates to 'fuse_name', 'fuse_ingredients', or 'fuse_steps'.`
+                }
+            });
+        }
+
+        FuseService.updateRecipe(
+            req.app.get('db'),
+            req.params.fused_id,
+            recipeToUpdate
+        )
+            .then(numRowsAffected => {
+                res.status(204).end();
+            })
+            .catch(next);
+    });
 
 module.exports = fuseRouter; 

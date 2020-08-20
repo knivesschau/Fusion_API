@@ -21,8 +21,8 @@ function makeRecipesArray() {
                     "Ut enim ad minim veniam, quis nostrud exercitation ullamco", 
                     "Laboris nisi ut aliquip ex ea commodo consequat."
                 ]),
-            base_cuisine: 1,
-            fuse_cuisine: 3
+            base_cuisine: "Vegan",
+            fuse_cuisine: "American",
         },
         {   
             fused_id: 2, 
@@ -48,8 +48,8 @@ function makeRecipesArray() {
                     "Ut enim ad minim veniam, quis nostrud exercitation ullamco", 
                     "Laboris nisi ut aliquip ex ea commodo consequat."
                 ]),
-            base_cuisine: 4,
-            fuse_cuisine: 1
+            fuse_cuisine: "French",
+            base_cuisine: "American"
         },
         {   
             fused_id: 3, 
@@ -75,8 +75,8 @@ function makeRecipesArray() {
                     "Ut enim ad minim veniam, quis nostrud exercitation ullamco", 
                     "Laboris nisi ut aliquip ex ea commodo consequat."
                 ]),
-            base_cuisine: 5,
-            fuse_cuisine: 2
+            base_cuisine: "Italian",
+            fuse_cuisine: "Asian"
         },
     ];
 };

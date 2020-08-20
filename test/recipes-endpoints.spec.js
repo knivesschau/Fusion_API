@@ -26,7 +26,7 @@ describe('fused recipes endpoints', function() {
 
     afterEach('cleanup cuisines', () => db('cuisines').delete());
 
-    describe(`GET /api/recipes`, () => {
+    describe.only(`GET /api/recipes`, () => {
         context(`Given no fused recipes in the database`, () => {
             it ('Responds with 200, but with no fused recipes', () => {
                 return supertest(app)
@@ -93,6 +93,42 @@ describe('fused recipes endpoints', function() {
                 return supertest(app)
                     .get(`/api/recipes/${recipeId}`)
                     .expect(200, expectedRecipe)
+            });
+        });
+
+        context(`Given an XSS attack recipe entry`, () => {
+            const testCuisines = makeCuisinesArray();
+
+            const badRecipe = {
+                fused_id: 411, 
+                fused_name: 'Recipe name BAD CODE <script>alert("xss");</script>',
+                fuse_ingredients: JSON.stringify(['4 cups milk', '2 teaspoons of salt', '1 cup of BAD CODE <script>alert("xss");</script>']),
+                fuse_steps: `Step 1 make a MALICIOUS ENTRY BAD IMG "https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);"&gt`,
+                base_cuisine: 2, 
+                fuse_cuisine: 3
+            };
+
+            beforeEach('insert cuisine styles', () => {
+                return db
+                    .into('cuisines')
+                    .insert(testCuisines)
+            });
+
+            beforeEach('insert xss recipe', () => {
+                return db
+                    .into('fused_recipes')
+                    .insert([badRecipe])
+            });
+
+            it ('Removes XSS attack content', () => {
+                return supertest(app)
+                    .get(`/api/recipes/${badRecipe.fused_id}`)
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.body.fused_name).to.eql('Recipe name BAD CODE &lt;script&gt;alert(\"xss\");&lt;/script&gt;');
+                        expect(res.body.fuse_ingredients).to.eql(JSON.stringify(['4 cups milk', '2 teaspoons of salt', '1 cup of BAD CODE &lt;script&gt;alert(\"xss\");&lt;/script&gt;']));
+                        expect(res.body.fuse_steps).to.eql(`Step 1 make a MALICIOUS ENTRY BAD IMG "https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);"&gt`);
+                    });
             });
         });
     });
@@ -209,6 +245,21 @@ describe('fused recipes endpoints', function() {
     });
 
     describe(`PATCH /api/recipes/:recipe_id`, () => {
+        context(`Given there are no fused recipes in the database`, () => {
+            it ('Responds with 404', () => {
+                const recipeId = 51015;
 
+                return supertest(app)
+                    .patch(`/api/recipes/${recipeId}`)
+                    .expect(404, {
+                        error: {message: `Recipe does not exist.`}
+                    })
+            });
+        });
+
+        context(`Given there are fused recipes in the database`, () => {
+            const testRecipes = makeRecipesArray();
+            const testCuisines = makeCuisinesArray();
+        })
     });
 });
