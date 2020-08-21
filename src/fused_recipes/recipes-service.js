@@ -8,9 +8,11 @@ const FuseService = {
     },
     getRecipeById(knex, fused_id) {
         return knex
+            .select('fused_id', 'fused_name', 'date_created', 'date_modified', 'fuse_ingredients', 'fuse_steps', 'base_cuisine', 'fuse_cuisine', 'br.cuisine_name AS base_cuisine', 'fr.cuisine_name AS fuse_cuisine')
             .from('fused_recipes')
-            .select('*')
             .where('fused_id', fused_id)
+            .innerJoin('cuisines AS br', 'fused_recipes.base_cuisine', '=', 'br.culinary_id')
+            .leftJoin('cuisines AS fr', 'fused_recipes.fuse_cuisine', '=', 'fr.culinary_id')
             .first();
     },
     insertRecipe(knex, newRecipe) {

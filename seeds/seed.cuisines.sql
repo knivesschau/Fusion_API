@@ -6,4 +6,5 @@ INSERT INTO cuisines(cuisine_name)
         ('Italian'),
         ('Mexican'),
         ('Vegan'),
-        ('Vegetarian');
+        ('Vegetarian'),
+        ('None');

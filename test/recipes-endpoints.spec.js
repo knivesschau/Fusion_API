@@ -26,7 +26,7 @@ describe('fused recipes endpoints', function() {
 
     afterEach('cleanup cuisines', () => db('cuisines').delete());
 
-    describe.only(`GET /api/recipes`, () => {
+    describe(`GET /api/recipes`, () => {
         context(`Given no fused recipes in the database`, () => {
             it ('Responds with 200, but with no fused recipes', () => {
                 return supertest(app)
@@ -36,7 +36,7 @@ describe('fused recipes endpoints', function() {
         });
 
         context(`Given there are fused recipes in the database`, () => {
-            const testRecipes = makeRecipesArray();
+            let testRecipes = makeRecipesArray();
             const testCuisines = makeCuisinesArray();
             
             beforeEach('insert cuisine styles', () => {
@@ -51,15 +51,44 @@ describe('fused recipes endpoints', function() {
                     .insert(testRecipes)
             });
 
-            beforeEach('join tables', () => {
-                return knex
-                    .select('fused_id', 'fused_name', 'date_created', 'date_modified', 'fuse_ingredients', 'fuse_steps', 'base_cuisine', 'fuse_cuisine', 'br.cuisine_name AS base_cuisine', 'fr.cuisine_name AS fuse_cuisine')
-                    .from('fused_recipes')
-                    .innerJoin('cuisines AS br', 'fused_recipes.base_cuisine', '=', 'br.culinary_id')
-                    .leftJoin('cuisines AS fr', 'fused_recipes.fuse_cuisine', '=', 'fr.culinary_id')
-            }); 
- 
             it ('GET /api/recipes responds 200 and with all saved recipes', () => {
+                // mimic the joined table data from fused_recipes and cuisines  
+                let joinData = [
+                    {
+                      fused_id: 1,
+                      fused_name: 'Avocado and Tomato Toast',
+                      date_created: '2020-08-01T16:28:32.615Z',
+                      date_modified: '2020-08-05T16:28:32.615Z',
+                      fuse_ingredients: '["1 Avocado","Pinch of Salt","5 Cups Lorem","5 Tablespoons Ipsum","1/2 Teaspoon Dolor Sit Amet","1 1/2 Cups Tomatoes"]',
+                      fuse_steps: '["Lorem ipsum dolor sit amet","consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam, quis nostrud exercitation ullamco","Laboris nisi ut aliquip ex ea commodo consequat."]',
+                      base_cuisine: "Vegan",
+                      fuse_cuisine: "American"
+                    },
+                    {
+                      fused_id: 2,
+                      fused_name: 'Potato and Cheese Crepes',
+                      date_created: '2020-08-05T16:28:32.615Z',
+                      date_modified: '2020-08-10T16:28:32.615Z',
+                      fuse_ingredients: '["1/2 Cup Milk","4 large eggs","1 Teaspoon Sugar","1 lb potatoes, chopped","Pinch of Salt","5 Cups Lorem","5 Tablespoons Ipsum","1/2 Teaspoon Dolor Sit Amet","1 cup Cheddar cheese"]',
+                      fuse_steps: '["Lorem ipsum dolor sit amet","consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam, quis nostrud exercitation ullamco","Laboris nisi ut aliquip ex ea commodo consequat."]',
+                      base_cuisine: "French",
+                      fuse_cuisine: "American"
+                    },
+                    {
+                      fused_id: 3,
+                      fused_name: 'Miso Spaghetti Carbonara',
+                      date_created: '2020-07-14T16:28:32.615Z',
+                      date_modified: '2020-08-31T16:28:32.615Z',
+                      fuse_ingredients: '["2 Tablespoons Miso Paste","2 cups cold water","1 Teaspoon Sugar","1 whole can chopped tomatoes","1/4 Cup Fresh Basil","Pinch of Salt","5 Cups Lorem","5 Tablespoons Ipsum","1/2 Teaspoon Dolor Sit Amet"]',
+                      fuse_steps: '["Lorem ipsum dolor sit amet","consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam, quis nostrud exercitation ullamco","Laboris nisi ut aliquip ex ea commodo consequat."]',
+                      base_cuisine: "Italian",
+                      fuse_cuisine: "Asian"
+                    }
+                  ];
+
+                // set original mock data equal to joined data. 
+                testRecipes = joinData;
+
                 return supertest(app)
                     .get('/api/recipes')
                     .expect(200, testRecipes)
@@ -95,8 +124,21 @@ describe('fused recipes endpoints', function() {
             });
 
             it ('GET /recipes/:recipe_id responds with 200 and the specific recipe', () => {
-                const recipeId = 2;
-                const expectedRecipe = testRecipes[recipeId - 1];
+                const recipeId = 1;
+                let expectedRecipe = testRecipes[recipeId - 2];
+
+                const joinDataById = {
+                        fused_id: 1,
+                        fused_name: 'Avocado and Tomato Toast',
+                        date_created: '2020-08-01T16:28:32.615Z',
+                        date_modified: '2020-08-05T16:28:32.615Z',
+                        fuse_ingredients: '["1 Avocado","Pinch of Salt","5 Cups Lorem","5 Tablespoons Ipsum","1/2 Teaspoon Dolor Sit Amet","1 1/2 Cups Tomatoes"]',
+                        fuse_steps: '["Lorem ipsum dolor sit amet","consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam, quis nostrud exercitation ullamco","Laboris nisi ut aliquip ex ea commodo consequat."]',
+                        base_cuisine: "Vegan",
+                        fuse_cuisine: "American"
+                };
+
+                expectedRecipe = joinDataById;
                 
                 return supertest(app)
                     .get(`/api/recipes/${recipeId}`)
@@ -186,7 +228,7 @@ describe('fused recipes endpoints', function() {
                 });
         });
 
-        const requiredFields = ['fused_name', 'fuse_ingredients', 'fuse_steps', 'base_cuisine'];
+        const requiredFields = ['fused_name', 'fuse_ingredients', 'fuse_steps', 'base_cuisine', 'fuse_cuisine'];
 
         requiredFields.forEach(field => {
             const newRecipe = {

@@ -48,8 +48,8 @@ function makeRecipesArray() {
                     "Ut enim ad minim veniam, quis nostrud exercitation ullamco", 
                     "Laboris nisi ut aliquip ex ea commodo consequat."
                 ]),
-            fuse_cuisine: 1,
-            base_cuisine: 4
+            base_cuisine: 4,
+            fuse_cuisine: 1
         },
         {   
             fused_id: 3, 
@@ -82,5 +82,5 @@ function makeRecipesArray() {
 };
 
 module.exports = {
-    makeRecipesArray
+    makeRecipesArray,
 };
