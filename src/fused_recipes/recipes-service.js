@@ -27,13 +27,13 @@ const FuseService = {
     deleteRecipe(knex, fused_id) {
         return knex('fused_recipes')
             .where({fused_id})
-            .delete()
+            .delete();
     },
     updateRecipe(knex, fused_id, newRecipeFields) {
         return knex('fused_recipes')
             .where({fused_id})
-            .update(newRecipeFields)
-    }
+            .update(newRecipeFields);
+    },
 };
 
 module.exports = FuseService;

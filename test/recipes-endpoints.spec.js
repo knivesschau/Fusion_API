@@ -126,7 +126,8 @@ describe('fused recipes endpoints', function() {
             it ('GET /recipes/:recipe_id responds with 200 and the specific recipe', () => {
                 const recipeId = 1;
                 let expectedRecipe = testRecipes[recipeId - 2];
-
+                
+                // mimic the joined table data from fused_recipes and cuisines  
                 const joinDataById = {
                         fused_id: 1,
                         fused_name: 'Avocado and Tomato Toast',
