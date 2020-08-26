@@ -5,7 +5,7 @@ const {makeBasesArray} = require('./base_recipe.fixtures');
 const {makeCuisinesArray} = require('./cuisine.fixtures');
 const supertest = require('supertest');
 
-describe.only('base recipe endpoints', function() {
+describe('base recipe endpoints', function() {
     let db;
 
     before('make knex instance', () => {
@@ -37,7 +37,7 @@ describe.only('base recipe endpoints', function() {
 
         context(`Given there are base recipes in the database`, () => {
             const testCuisines = makeCuisinesArray();
-            const testBases = makeBasesArray();
+            let testBases = makeBasesArray();
 
             beforeEach('insert cuisines into database', () => {
                 return db
@@ -52,6 +52,40 @@ describe.only('base recipe endpoints', function() {
             });
             
             it ('GET /api/bases responds with 200 and all base recipes', () => {
+                
+                //mimic join data
+                const testRecipes = [
+                    {
+                      recipe_id: 1,
+                      base_name: 'Base Test with Rice',
+                      ingredients: '["2/3 cup Lorem Ipsum","3 cups jasmine rice","2 cups sit dolor amet","4 teaspoons sugar","1 cup vegetable broth"]',
+                      steps: '["Cook rice according to package directions.","In a pot, combine sugar and lorem ipsum. Bring to a boil and let simmer.","Si dolor amet lorem ipsum, serve hot."]',
+                      cuisine_id: 2,
+                      culinary_id: 2,
+                      cuisine_name: 'Asian'
+                    },
+                    {
+                      recipe_id: 2,
+                      base_name: 'GET Stir-Fry',
+                      ingredients: '["2 lbs potatoes","3/4 teaspoon Lorem ipsum","2 bell peppers, sliced","1/4 teaspoon salt, or to taste","3 cups si dolor amet"]',
+                      steps: '["Heat pan to high heat. Add potatoes and bell peppers. Cook until soft.","Add lorem ipsum and si dolor amet. Continue cooking until aromatic.","Serve over rice."]',
+                      cuisine_id: 3,
+                      culinary_id: 3,
+                      cuisine_name: 'Vegan'
+                    },
+                    {
+                      recipe_id: 3,
+                      base_name: 'Testing Omelette',
+                      ingredients: '["3 large eggs","1 cup creme fraiche","2 chives, chopped","1/3 cup Lorem Ipsum"]',
+                      steps: '["Crack eggs into pot over low heat. Stir continously on and off heat.","When eggs begin to form, add creme fraiche. Continue to stir on and off until eggs solidify","Add lorem ipsum and chives, serve over large slice of bread."]',
+                      cuisine_id: 4,
+                      culinary_id: 4,
+                      cuisine_name: 'French'
+                    }
+                  ];
+                
+                testBases = testRecipes;
+                
                 return supertest(app)
                     .get('/api/bases')
                     .expect(200, testBases)
@@ -88,7 +122,20 @@ describe.only('base recipe endpoints', function() {
 
             it ('GET /api/bases/:recipe_id responds 200 and with specific base recipe', () => {
                 const baseId = 2;
-                const expectedRecipe = testBases[baseId - 1];
+                let expectedRecipe = testBases[baseId - 1];
+
+                //mimic join data 
+                const testRecipe =  {
+                      recipe_id: 2,
+                      base_name: 'GET Stir-Fry',
+                      ingredients: '["2 lbs potatoes","3/4 teaspoon Lorem ipsum","2 bell peppers, sliced","1/4 teaspoon salt, or to taste","3 cups si dolor amet"]',
+                      steps: '["Heat pan to high heat. Add potatoes and bell peppers. Cook until soft.","Add lorem ipsum and si dolor amet. Continue cooking until aromatic.","Serve over rice."]',
+                      cuisine_id: 3,
+                      culinary_id: 3,
+                      cuisine_name: 'Vegan'
+                };
+
+                expectedRecipe = testRecipe;
 
                 return supertest(app)
                     .get(`/api/bases/${baseId}`)

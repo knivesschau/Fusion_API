@@ -5,7 +5,7 @@ function makeBasesArray() {
             base_name: "Base Test with Rice",
             ingredients: JSON.stringify(["2/3 cup Lorem Ipsum", "3 cups jasmine rice", "2 cups sit dolor amet", "4 teaspoons sugar", "1 cup vegetable broth"]),
             steps: JSON.stringify(["Cook rice according to package directions.", "In a pot, combine sugar and lorem ipsum. Bring to a boil and let simmer.", "Si dolor amet lorem ipsum, serve hot."]),
-            cuisine_id: 2
+            cuisine_id: 2,
         },
         {
             recipe_id: 2,
