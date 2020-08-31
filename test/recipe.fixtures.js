@@ -22,7 +22,8 @@ function makeRecipesArray() {
                     "Laboris nisi ut aliquip ex ea commodo consequat."
                 ]),
             base_cuisine: 3,
-            fuse_cuisine: 1
+            fuse_cuisine: 1,
+            author_id: 1
         },
         {   
             fused_id: 2, 
@@ -49,7 +50,8 @@ function makeRecipesArray() {
                     "Laboris nisi ut aliquip ex ea commodo consequat."
                 ]),
             base_cuisine: 4,
-            fuse_cuisine: 1
+            fuse_cuisine: 1,
+            author_id: 2
         },
         {   
             fused_id: 3, 
@@ -76,7 +78,8 @@ function makeRecipesArray() {
                     "Laboris nisi ut aliquip ex ea commodo consequat."
                 ]),
             base_cuisine: 5,
-            fuse_cuisine: 2
+            fuse_cuisine: 2,
+            author_id: 3
         },
     ];
 };

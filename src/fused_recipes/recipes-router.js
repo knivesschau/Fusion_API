@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const xss = require('xss');
 const FuseService = require('./recipes-service');
+const {requireAuth} = require('../middleware/basic-auth');
 
 const fuseRouter = express.Router();
 const jsonParser = express.json();
@@ -14,11 +15,13 @@ const serializeRecipeEntry = recipe => ({
     fuse_ingredients: xss(recipe.fuse_ingredients),
     fuse_steps: xss(recipe.fuse_steps),
     base_cuisine: recipe.base_cuisine,
-    fuse_cuisine: recipe.fuse_cuisine
+    fuse_cuisine: recipe.fuse_cuisine,
+    author_id: recipe.author_id
 });
 
 fuseRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         FuseService.getAllRecipes(
             req.app.get('db')
@@ -28,7 +31,7 @@ fuseRouter
         })
         .catch(next);
     })
-    .post(jsonParser, (req, res, next) => {
+    .post(requireAuth, jsonParser, (req, res, next) => {
         const {fused_name, fuse_ingredients, fuse_steps, base_cuisine, fuse_cuisine} = req.body;
         const newRecipe = {fused_name, fuse_ingredients, fuse_steps, base_cuisine, fuse_cuisine}; 
 
@@ -55,6 +58,7 @@ fuseRouter
 
 fuseRouter
     .route('/:fused_id')
+    .all(requireAuth)
     .all((req, res, next) => {
         FuseService.getRecipeById(
             req.app.get('db'),

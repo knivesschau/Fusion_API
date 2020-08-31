@@ -1,10 +1,12 @@
 const express = require('express');
 const CuisineService = require('./cuisine-service');
+const {requireAuth} = require('../middleware/basic-auth');
 
 const cuisineRouter = express.Router();
 
 cuisineRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         CuisineService.getCuisines(
             req.app.get('db')
@@ -17,6 +19,7 @@ cuisineRouter
 
 cuisineRouter
     .route('/:culinary_id')
+    .all(requireAuth)
     .get((req, res, next) => {
         CuisineService.getCuisineById(
             req.app.get('db'),

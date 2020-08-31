@@ -1,10 +1,12 @@
 const express = require('express');
 const BaseService = require('./base-service');
+const {requireAuth} = require('../middleware/basic-auth');
 
 const baseRouter = express.Router();
 
 baseRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         BaseService.getBaseRecipes(
             req.app.get('db')
@@ -17,6 +19,7 @@ baseRouter
 
 baseRouter
     .route('/:recipe_id')
+    .all(requireAuth)
     .get((req, res, next) => {
         BaseService.getBaseById(
             req.app.get('db'),
