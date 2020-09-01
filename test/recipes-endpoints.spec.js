@@ -15,7 +15,7 @@ describe ('Fused recipes endpoints', function() {
             client: 'pg',
             connection: process.env.TEST_DATABASE_URL
         });
-        app.set('db', db)
+        app.set('db', db);
     });
 
     after('disconnect from db', () => db.destroy());
@@ -122,7 +122,7 @@ describe ('Fused recipes endpoints', function() {
         context(`Given there are no fused recipes in the database`, () => {
             const testUsers = makeUsersArray();
 
-            beforeEach('insert test users', () => {
+            before('insert test users', () => {
                 helpers.seedUsers(db, testUsers)
             });
             
@@ -141,14 +141,14 @@ describe ('Fused recipes endpoints', function() {
             const testUsers = makeUsersArray();
             const testCuisines = makeCuisinesArray();
 
+            beforeEach('insert test users', () => {
+                helpers.seedUsers(db, testUsers)
+            });
+            
             beforeEach('insert cuisine styles', () => {
                 return db
                     .into('cuisines')
                     .insert(testCuisines)
-            });
-
-            beforeEach('insert test users', () => {
-                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert fused recipes', () => {
@@ -385,14 +385,14 @@ describe ('Fused recipes endpoints', function() {
             const testUsers = makeUsersArray();
             const testCuisines = makeCuisinesArray();
 
+            beforeEach('insert test users', () => {
+                helpers.seedUsers(db, testUsers)
+            });
+            
             beforeEach('insert cuisine styles', () => {
                 return db
                     .into('cuisines')
                     .insert(testCuisines)
-            });
-
-            beforeEach('insert test users', () => {
-                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert fused recipes', () => {

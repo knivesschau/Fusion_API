@@ -1,8 +1,17 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-function makeAuthHeader(user) {
-    const token = Buffer.from(`${user.user_name}:${user.password}`).toString('base64')
-    return `Basic ${token}`;
+function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+    const token = jwt.sign(
+        {user_id: user.user_id},
+        secret,
+        {
+            subject: user.user_name,
+            algorithm: 'HS256'
+        }
+    );
+
+    return `Bearer ${token}`; 
 }
 
 function seedUsers(db, users) {
@@ -15,7 +24,7 @@ function seedUsers(db, users) {
         .then(() => {
             db.raw(
                 `SELECT setval('fusion_users_user_id_seq', ?)`,
-                [users[users.length - 1].id]
+                [users[users.length - 1].user_id]
             );
         });
 }

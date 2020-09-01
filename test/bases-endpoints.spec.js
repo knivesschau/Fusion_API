@@ -15,7 +15,7 @@ describe ('Base recipe endpoints', function() {
             client: 'pg',
             connection: process.env.TEST_DATABASE_URL
         });
-        app.set('db', db)
+        app.set('db', db);
     });
 
     after('disconnect from db', () => db.destroy());
@@ -116,7 +116,7 @@ describe ('Base recipe endpoints', function() {
         context(`Given no base recipes in the database`, () => {
             const testUsers = makeUsersArray();
 
-            beforeEach('insert test users', () => {
+            before('insert test users', () => {
                 helpers.seedUsers(db, testUsers)
             });
 
@@ -135,7 +135,7 @@ describe ('Base recipe endpoints', function() {
             const testBases = makeBasesArray();
             const testUsers = makeUsersArray();
 
-            beforeEach('insert test users', () => {
+            before('insert test users', () => {
                 helpers.seedUsers(db, testUsers)
             });
 

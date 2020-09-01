@@ -94,34 +94,26 @@ describe ('Protected Endpoints', function() {
 
     protectedEndpoints.forEach(endpoint => {
         describe(endpoint.name, () => {
-            it (`Responds 401 'Missing basic token' when no basic token`, () => {
+            it (`Responds 401 'Missing bearer token' when no bearer token`, () => {
                 return endpoint.method(endpoint.path)
-                    .expect(401, {error: `Missing basic token`})
+                    .expect(401, {error: `Missing bearer token`})
             });
 
-            it (`Responds 401 'Unauthorized request' when no credentials in token`, () => {
-                const unAuthCreds = {user_name: '', password: ''}
+            it (`Responds 401 'Unauthorized request' when invalid JWT secret`, () => {
+                const validUser = testUsers[0];
+                const invalidSecret = 'bad-secret';
 
                 return endpoint.method(endpoint.path)
-                    .set('Authorization', helpers.makeAuthHeader(unAuthCreds))
+                    .set('Authorization', helpers.makeAuthHeader(validUser, invalidSecret))
                     .expect(401, {error: `Unauthorized request`})
             });
 
-            it (`Responds with 401 'Unauthorized request' when invalid user is provided`, () => {
-                const invalidUserName = {user_name: 'fake-user', password: 'fakie101'};
+            it (`Responds with 401 'Unauthorized request' when invalid sub in payload`, () => {
+                const invalidUser = {user_name: 'fake-user', user_id: 1};
 
                 return supertest(app)
                     .get(`/api/recipes/1`)
-                    .set('Authorization', helpers.makeAuthHeader(invalidUserName))
-                    .expect(401, {error: `Unauthorized request`})
-            });
-
-            it (`Responds with 401 'Unauthorized request' when invalid password is provided`, () => {
-                const invalidPassword = {user_name: testUsers[0], password: 'incorrectpass'};
-
-                return supertest(app)
-                    .get(`/api/recipes/1`)
-                    .set('Authorization', helpers.makeAuthHeader(invalidPassword))
+                    .set('Authorization', helpers.makeAuthHeader(invalidUser))
                     .expect(401, {error: `Unauthorized request`})
             });
         });

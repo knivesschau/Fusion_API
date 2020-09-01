@@ -1,6 +1,6 @@
 const express = require('express');
 const CuisineService = require('./cuisine-service');
-const {requireAuth} = require('../middleware/basic-auth');
+const {requireAuth} = require('../middleware/jwt-auth');
 
 const cuisineRouter = express.Router();
 
