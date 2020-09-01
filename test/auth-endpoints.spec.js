@@ -88,6 +88,7 @@ describe ('Authorized Endpoints', function() {
                     process.env.JWT_SECRET,
                     {
                         subject: testUser.user_name,
+                        expiresIn: process.env.JWT_EXPIRY,
                         algorithm: 'HS256'
                     }
                 );

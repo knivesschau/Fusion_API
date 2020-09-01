@@ -24,11 +24,11 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Fusion API!')
 });
 
+app.use('/api/auth', authRouter); 
 app.use('/api/recipes', fuseRouter);
 app.use('/api/bases', baseRouter);
 app.use('/api/cuisines', cuisineRouter);
-app.use('/api/auth', authRouter); 
-app.use('/api/users', usersRouter);
+app.use('/api/users', usersRouter)
 
 app.use(function errorHandler(error, req, res, next) {
     let response;
