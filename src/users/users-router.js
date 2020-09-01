@@ -7,6 +7,7 @@ const { hasDuplicateUser } = require('./users-service');
 const usersRouter = express.Router();
 const jsonBodyParser = express.json();
 
+// router to handle all registration requests made by potential users
 usersRouter
     .post('/', jsonBodyParser, (req, res, next) => {
         const {password, user_name} = req.body;

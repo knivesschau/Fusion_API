@@ -4,6 +4,7 @@ const {requireAuth} = require('../middleware/jwt-auth');
 
 const cuisineRouter = express.Router();
 
+// router to handle GET requests for all cuisine styles from the API
 cuisineRouter
     .route('/')
     .all(requireAuth)

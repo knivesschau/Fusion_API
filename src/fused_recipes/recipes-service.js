@@ -1,3 +1,4 @@
+// service object to handle all db queries that assist with CRUD implementation of fused recipes 
 const FuseService = {
     getAllRecipes(knex, author_id) {
         return knex
@@ -5,7 +6,7 @@ const FuseService = {
             .from('fused_recipes')
             .where({author_id: author_id})
             .innerJoin('cuisines AS br', 'fused_recipes.base_cuisine', '=', 'br.culinary_id')
-            .leftJoin('cuisines AS fr', 'fused_recipes.fuse_cuisine', '=', 'fr.culinary_id')
+            .leftJoin('cuisines AS fr', 'fused_recipes.fuse_cuisine', '=', 'fr.culinary_id');
     },
     getRecipeById(knex, fused_id, author_id) {
         return knex

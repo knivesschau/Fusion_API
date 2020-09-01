@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
+// service object to handle db queries that authenticate users attempting to log in
 const AuthService = {
     getRegisteredUser(db, user_name) {
         return db('fusion_users')

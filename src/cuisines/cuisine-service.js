@@ -1,8 +1,9 @@
+// service object to handle db queries to GET all culinary style data 
 const CuisineService = {
     getCuisines(knex) {
         return knex
             .select('*')
-            .from('cuisines')
+            .from('cuisines');
     },
     getCuisineById(knex, culinary_id) {
         return knex

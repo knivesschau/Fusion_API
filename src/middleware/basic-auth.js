@@ -1,6 +1,7 @@
 const AuthService = require('../auth/auth-service');
 const bcrypt = require('bcryptjs');
 
+// middleware to bcrypt all user passwords, also served as first form of security via basic token while building server authentication
 function requireAuth(req, res, next) {
     const authToken = req.get('Authorization') || '';
 

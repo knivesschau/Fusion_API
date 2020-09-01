@@ -7,6 +7,7 @@ const {requireAuth} = require('../middleware/jwt-auth');
 const fuseRouter = express.Router();
 const jsonParser = express.json();
 
+// pass xss sanitation through all recipes posted/edited on the server. 
 const serializeRecipeEntry = recipe => ({
     fused_id: recipe.fused_id,
     fused_name: xss(recipe.fused_name),
@@ -19,6 +20,7 @@ const serializeRecipeEntry = recipe => ({
     author_id: recipe.author_id
 });
 
+// router to handle all CRUD capabilities of user-made fused recipes 
 fuseRouter
     .route('/')
     .all(requireAuth)

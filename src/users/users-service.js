@@ -2,6 +2,7 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 const xss = require('xss');
 const bcrypt = require('bcryptjs');
 
+// service object that handles db queries to authenticate and assist with protected user registration 
 const UsersService = {
     hasDuplicateUser(db, user_name) {
         return db('fusion_users')

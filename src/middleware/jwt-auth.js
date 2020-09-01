@@ -1,5 +1,6 @@
 const AuthService = require('../auth/auth-service');
 
+// middleware to implement JWT authorization bearer tokens and protect/authenticate server endpoints 
 function requireAuth(req, res, next) {
     const authToken = req.get('Authorization') || '';
 

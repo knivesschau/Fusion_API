@@ -20,15 +20,17 @@ app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
 
+// landing page for API 
 app.get('/', (req, res) => {
     res.send('Welcome to the Fusion API!')
 });
 
-app.use('/api/auth', authRouter); 
-app.use('/api/recipes', fuseRouter);
-app.use('/api/bases', baseRouter);
-app.use('/api/cuisines', cuisineRouter);
-app.use('/api/users', usersRouter)
+// all API server routes 
+app.use('/api/auth', authRouter); // authentication and login endpoint
+app.use('/api/recipes', fuseRouter); // dyanmic endpoint, user created and generated recipes
+app.use('/api/bases', baseRouter); // static endpoint, starter recipes for users
+app.use('/api/cuisines', cuisineRouter); // static endpoint, cuisines for users
+app.use('/api/users', usersRouter); // registration and user data endpoint
 
 app.use(function errorHandler(error, req, res, next) {
     let response;

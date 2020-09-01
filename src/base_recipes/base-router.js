@@ -4,6 +4,7 @@ const {requireAuth} = require('../middleware/jwt-auth');
 
 const baseRouter = express.Router();
 
+// router to handle GET requests for all starter recipes from the API
 baseRouter
     .route('/')
     .all(requireAuth)
