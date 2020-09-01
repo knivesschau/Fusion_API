@@ -1,10 +1,13 @@
 const express = require('express');
 const CuisineService = require('./cuisine-service');
+const {requireAuth} = require('../middleware/jwt-auth');
 
 const cuisineRouter = express.Router();
 
+// router to handle GET requests for all cuisine styles from the API
 cuisineRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         CuisineService.getCuisines(
             req.app.get('db')
@@ -17,6 +20,7 @@ cuisineRouter
 
 cuisineRouter
     .route('/:culinary_id')
+    .all(requireAuth)
     .get((req, res, next) => {
         CuisineService.getCuisineById(
             req.app.get('db'),

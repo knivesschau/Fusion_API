@@ -2,10 +2,12 @@ const path = require('path');
 const express = require('express');
 const xss = require('xss');
 const FuseService = require('./recipes-service');
+const {requireAuth} = require('../middleware/jwt-auth');
 
 const fuseRouter = express.Router();
 const jsonParser = express.json();
 
+// pass xss sanitation through all recipes posted/edited on the server. 
 const serializeRecipeEntry = recipe => ({
     fused_id: recipe.fused_id,
     fused_name: xss(recipe.fused_name),
@@ -14,21 +16,25 @@ const serializeRecipeEntry = recipe => ({
     fuse_ingredients: xss(recipe.fuse_ingredients),
     fuse_steps: xss(recipe.fuse_steps),
     base_cuisine: recipe.base_cuisine,
-    fuse_cuisine: recipe.fuse_cuisine
+    fuse_cuisine: recipe.fuse_cuisine,
+    author_id: recipe.author_id
 });
 
+// router to handle all CRUD capabilities of user-made fused recipes 
 fuseRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         FuseService.getAllRecipes(
-            req.app.get('db')
+            req.app.get('db'),
+            req.user.user_id
         )
         .then(recipes => {
             res.json(recipes);
         })
         .catch(next);
     })
-    .post(jsonParser, (req, res, next) => {
+    .post(requireAuth, jsonParser, (req, res, next) => {
         const {fused_name, fuse_ingredients, fuse_steps, base_cuisine, fuse_cuisine} = req.body;
         const newRecipe = {fused_name, fuse_ingredients, fuse_steps, base_cuisine, fuse_cuisine}; 
 
@@ -39,6 +45,8 @@ fuseRouter
                 });
             }
         }
+
+        newRecipe.author_id = req.user.user_id;
 
         FuseService.insertRecipe(
             req.app.get('db'),
@@ -55,10 +63,12 @@ fuseRouter
 
 fuseRouter
     .route('/:fused_id')
+    .all(requireAuth)
     .all((req, res, next) => {
         FuseService.getRecipeById(
             req.app.get('db'),
-            req.params.fused_id
+            req.params.fused_id,
+            req.user.user_id
         )
             .then(recipe => {
                 if (!recipe) {
@@ -66,6 +76,14 @@ fuseRouter
                         error: {message: `Recipe does not exist.`}
                     });
                 }
+
+                const user_id = req.user.user_id; 
+                const author_id = recipe.author_id;
+
+                if (author_id !== user_id) {
+                    return res.status(403).json({error: {message: `Credentials invalid.`}});
+                }
+                
                 res.recipe = recipe;
                 next();
             })

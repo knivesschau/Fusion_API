@@ -1,16 +1,21 @@
+// service object to handle all db queries that assist with CRUD implementation of fused recipes 
 const FuseService = {
-    getAllRecipes(knex) {
+    getAllRecipes(knex, author_id) {
         return knex
-            .select('fused_id', 'fused_name', 'date_created', 'date_modified', 'fuse_ingredients', 'fuse_steps', 'base_cuisine', 'fuse_cuisine', 'br.cuisine_name AS base_cuisine', 'fr.cuisine_name AS fuse_cuisine')
+            .select('fused_id', 'author_id', 'fused_name', 'date_created', 'date_modified', 'fuse_ingredients', 'fuse_steps', 'base_cuisine', 'fuse_cuisine', 'br.cuisine_name AS base_cuisine', 'fr.cuisine_name AS fuse_cuisine')
             .from('fused_recipes')
+            .where({author_id: author_id})
             .innerJoin('cuisines AS br', 'fused_recipes.base_cuisine', '=', 'br.culinary_id')
-            .leftJoin('cuisines AS fr', 'fused_recipes.fuse_cuisine', '=', 'fr.culinary_id')
+            .leftJoin('cuisines AS fr', 'fused_recipes.fuse_cuisine', '=', 'fr.culinary_id');
     },
-    getRecipeById(knex, fused_id) {
+    getRecipeById(knex, fused_id, author_id) {
         return knex
-            .select('fused_id', 'fused_name', 'date_created', 'date_modified', 'fuse_ingredients', 'fuse_steps', 'base_cuisine', 'fuse_cuisine', 'br.cuisine_name AS base_cuisine', 'fr.cuisine_name AS fuse_cuisine')
+            .select('fused_id', 'author_id', 'fused_name', 'date_created', 'date_modified', 'fuse_ingredients', 'fuse_steps', 'base_cuisine', 'fuse_cuisine', 'br.cuisine_name AS base_cuisine', 'fr.cuisine_name AS fuse_cuisine')
             .from('fused_recipes')
-            .where('fused_id', fused_id)
+            .where(
+                {fused_id: fused_id},
+                {author_id: author_id}
+            )
             .innerJoin('cuisines AS br', 'fused_recipes.base_cuisine', '=', 'br.culinary_id')
             .leftJoin('cuisines AS fr', 'fused_recipes.fuse_cuisine', '=', 'fr.culinary_id')
             .first();

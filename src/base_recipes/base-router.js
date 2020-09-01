@@ -1,10 +1,13 @@
 const express = require('express');
 const BaseService = require('./base-service');
+const {requireAuth} = require('../middleware/jwt-auth');
 
 const baseRouter = express.Router();
 
+// router to handle GET requests for all starter recipes from the API
 baseRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         BaseService.getBaseRecipes(
             req.app.get('db')
@@ -17,6 +20,7 @@ baseRouter
 
 baseRouter
     .route('/:recipe_id')
+    .all(requireAuth)
     .get((req, res, next) => {
         BaseService.getBaseById(
             req.app.get('db'),

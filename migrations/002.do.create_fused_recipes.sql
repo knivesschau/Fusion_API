@@ -1,3 +1,4 @@
+/* create table to hold all user-made fusion recipes, capture whenever user modifies the recipe last */
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
