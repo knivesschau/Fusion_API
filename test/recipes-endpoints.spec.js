@@ -52,6 +52,7 @@ describe ('Fused recipes endpoints', function() {
             let testRecipes = makeRecipesArray();
             const testUsers = makeUsersArray();
             const testCuisines = makeCuisinesArray();
+            const validUser = testUsers[0];
             
             beforeEach('insert cuisine styles', () => {
                 return db
@@ -69,7 +70,7 @@ describe ('Fused recipes endpoints', function() {
                     .insert(testRecipes)
             });
 
-            it ('GET /api/recipes responds 200 and with all saved recipes', () => {
+            it ('GET /api/recipes responds 200 and with all entries written by user logged in', () => {
                 // mimic the joined table data from fused_recipes and cuisines  
                 let joinData = [
                     {
@@ -83,28 +84,6 @@ describe ('Fused recipes endpoints', function() {
                       fuse_cuisine: "American",
                       author_id: 1
                     },
-                    {
-                      fused_id: 2,
-                      fused_name: 'Potato and Cheese Crepes',
-                      date_created: '2020-08-05T16:28:32.615Z',
-                      date_modified: '2020-08-10T16:28:32.615Z',
-                      fuse_ingredients: '["1/2 Cup Milk","4 large eggs","1 Teaspoon Sugar","1 lb potatoes, chopped","Pinch of Salt","5 Cups Lorem","5 Tablespoons Ipsum","1/2 Teaspoon Dolor Sit Amet","1 cup Cheddar cheese"]',
-                      fuse_steps: '["Lorem ipsum dolor sit amet","consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam, quis nostrud exercitation ullamco","Laboris nisi ut aliquip ex ea commodo consequat."]',
-                      base_cuisine: "French",
-                      fuse_cuisine: "American",
-                      author_id: 2
-                    },
-                    {
-                      fused_id: 3,
-                      fused_name: 'Miso Spaghetti Carbonara',
-                      date_created: '2020-07-14T16:28:32.615Z',
-                      date_modified: '2020-08-31T16:28:32.615Z',
-                      fuse_ingredients: '["2 Tablespoons Miso Paste","2 cups cold water","1 Teaspoon Sugar","1 whole can chopped tomatoes","1/4 Cup Fresh Basil","Pinch of Salt","5 Cups Lorem","5 Tablespoons Ipsum","1/2 Teaspoon Dolor Sit Amet"]',
-                      fuse_steps: '["Lorem ipsum dolor sit amet","consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam, quis nostrud exercitation ullamco","Laboris nisi ut aliquip ex ea commodo consequat."]',
-                      base_cuisine: "Italian",
-                      fuse_cuisine: "Asian",
-                      author_id: 3
-                    }
                   ];
 
                 // set original mock data equal to joined data. 
@@ -113,7 +92,7 @@ describe ('Fused recipes endpoints', function() {
                 return supertest(app)
                     .get('/api/recipes')
                     .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-                    .expect(200, testRecipes)
+                    .expect(200, testRecipes, validUser)
             });
         });
     });
@@ -159,7 +138,7 @@ describe ('Fused recipes endpoints', function() {
 
             it ('GET /recipes/:recipe_id responds with 200 and the specific recipe', () => {
                 const recipeId = 1;
-                let expectedRecipe = testRecipes[recipeId - 2];
+                let expectedRecipe = testRecipes[recipeId];
                 
                 // mimic the joined table data from fused_recipes and cuisines  
                 const joinDataById = {
@@ -344,7 +323,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             it ('Responds with 204 and removes the recipe', () => {
-                const idToRemove = 3; 
+                const idToRemove = 1; 
                 const expectedRecipe = testRecipes.filter(recipe => recipe.fused_id !== idToRemove);
 
                 return supertest(app)
@@ -402,7 +381,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             it ('Responds with 204 and updates the recipe', () => {
-                const idToUpdate = 2;
+                const idToUpdate = 1;
 
                 const updatedRecipe = {
                     fused_name: "Patch with Potatoes",
@@ -428,7 +407,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             it ('Responds with 400 when no required fields are sent', () => {
-                const idToUpdate = 2;
+                const idToUpdate = 1;
 
                 return supertest(app)
                     .patch(`/api/recipes/${idToUpdate}`)
@@ -442,7 +421,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             it ('Responds with 204 when updating only a subset of fields', () => {
-                const idToUpdate = 2;
+                const idToUpdate = 1;
 
                 const updateRecipe = {
                     fused_name: "Potatoes and Patch Gravy"

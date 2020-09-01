@@ -24,7 +24,8 @@ fuseRouter
     .all(requireAuth)
     .get((req, res, next) => {
         FuseService.getAllRecipes(
-            req.app.get('db')
+            req.app.get('db'),
+            req.user.user_id
         )
         .then(recipes => {
             res.json(recipes);
@@ -64,7 +65,8 @@ fuseRouter
     .all((req, res, next) => {
         FuseService.getRecipeById(
             req.app.get('db'),
-            req.params.fused_id
+            req.params.fused_id,
+            req.user.user_id
         )
             .then(recipe => {
                 if (!recipe) {
@@ -72,6 +74,14 @@ fuseRouter
                         error: {message: `Recipe does not exist.`}
                     });
                 }
+
+                const user_id = req.user.user_id; 
+                const author_id = recipe.author_id;
+
+                if (author_id !== user_id) {
+                    return res.status(403).json({error: {message: `Credentials invalid.`}});
+                }
+                
                 res.recipe = recipe;
                 next();
             })
