@@ -4,7 +4,7 @@ const app = require('../src/app');
 const {makeBasesArray} = require('./base_recipe.fixtures');
 const {makeCuisinesArray} = require('./cuisine.fixtures');
 const {makeUsersArray} = require('./users.fixtures');
-const {makeAuthHeader} = require('./test-helpers');
+const helpers = require('./test-helpers');
 const supertest = require('supertest');
 
 describe ('Base recipe endpoints', function() {
@@ -24,7 +24,7 @@ describe ('Base recipe endpoints', function() {
 
     beforeEach('remove cuisines table', () => db('cuisines').delete());
 
-    beforeEach('remove fused users table', () => db('fusion_users').delete());
+    before('remove fused users table', () => db('fusion_users').delete());
 
     afterEach('cleanup fused recipes table', () => db('base_recipes').truncate());
 
@@ -37,15 +37,13 @@ describe ('Base recipe endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             it ('Responds with 200, but no base recipes', () => {
                 return supertest(app)
                     .get('/api/bases')
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, [])
             });
         });
@@ -56,9 +54,7 @@ describe ('Base recipe endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert cuisines into database', () => {
@@ -110,7 +106,7 @@ describe ('Base recipe endpoints', function() {
                 
                 return supertest(app)
                     .get('/api/bases')
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, testBases)
             });
         });
@@ -121,9 +117,7 @@ describe ('Base recipe endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             it ('Responds with 404', () => {
@@ -131,7 +125,7 @@ describe ('Base recipe endpoints', function() {
 
                 return supertest(app)
                     .get(`/api/bases/${baseId}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(404, {error: {message: `Recipe does not exist.`}})
             });
         });
@@ -142,9 +136,7 @@ describe ('Base recipe endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert cuisines into database', () => {
@@ -178,7 +170,7 @@ describe ('Base recipe endpoints', function() {
 
                 return supertest(app)
                     .get(`/api/bases/${baseId}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, expectedRecipe)
             });
         });

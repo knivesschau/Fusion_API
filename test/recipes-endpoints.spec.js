@@ -5,7 +5,7 @@ const {makeRecipesArray} = require('./recipe.fixtures');
 const {makeCuisinesArray} = require('./cuisine.fixtures');
 const {makeUsersArray} = require('./users.fixtures');
 const supertest = require('supertest');
-const { makeAuthHeader } = require('./test-helpers');
+const helpers = require('./test-helpers');
 
 describe ('Fused recipes endpoints', function() {
     let db;
@@ -22,9 +22,9 @@ describe ('Fused recipes endpoints', function() {
 
     before('clean fused recipes table', () => db('fused_recipes').truncate());
 
-    beforeEach('remove cuisines table', () => db('cuisines').delete());
+    before('remove cuisines table', () => db('cuisines').delete());
 
-    beforeEach('remove fused users table', () => db('fusion_users').delete());
+    before('remove fused users table', () => db('fusion_users').delete());
 
     afterEach('cleanup fused recipes', () => db('fused_recipes').truncate());
 
@@ -37,15 +37,13 @@ describe ('Fused recipes endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
             
             it ('Responds with 200, but with no fused recipes', () => {
                 return supertest(app)
                     .get('/api/recipes')
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, [])
             });
         });
@@ -62,9 +60,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert fused recipes', () => {
@@ -116,7 +112,7 @@ describe ('Fused recipes endpoints', function() {
 
                 return supertest(app)
                     .get('/api/recipes')
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, testRecipes)
             });
         });
@@ -127,9 +123,7 @@ describe ('Fused recipes endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
             
             it ('Responds with 404', () => {
@@ -137,7 +131,7 @@ describe ('Fused recipes endpoints', function() {
 
                 return supertest(app)
                     .get(`/api/recipes/${recipeId}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(404, {error: {message: `Recipe does not exist.`}})
             });
         });
@@ -154,9 +148,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert fused recipes', () => {
@@ -186,7 +178,7 @@ describe ('Fused recipes endpoints', function() {
                 
                 return supertest(app)
                     .get(`/api/recipes/${recipeId}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, expectedRecipe)
             });
         });
@@ -212,9 +204,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert xss recipe', () => {
@@ -226,7 +216,7 @@ describe ('Fused recipes endpoints', function() {
             it ('Removes XSS attack content', () => {
                 return supertest(app)
                     .get(`/api/recipes/${badRecipe.fused_id}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200)
                     .expect(res => {
                         expect(res.body.fused_name).to.eql('Recipe name BAD CODE &lt;script&gt;alert(\"xss\");&lt;/script&gt;');
@@ -250,9 +240,7 @@ describe ('Fused recipes endpoints', function() {
         });
 
         beforeEach('insert test users', () => {
-            return db
-                .into('fusion_users')
-                .insert(testUsers)
+            helpers.seedUsers(db, testUsers)
         });
 
         const newRecipe = {
@@ -268,7 +256,7 @@ describe ('Fused recipes endpoints', function() {
             return supertest(app)
                 .post('/api/recipes')
                 .send(newRecipe)
-                .set('Authorization', makeAuthHeader(testUsers[0]))
+                .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                 .expect(201)
                 .expect(res => {
                     expect(res.body.fused_name).to.eql(newRecipe.fused_name);
@@ -308,7 +296,7 @@ describe ('Fused recipes endpoints', function() {
                 return supertest(app)
                     .post('/api/recipes')
                     .send(newRecipe)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(400, {
                         error: {message: `Missing '${field}' entry in request body.`}
                     });
@@ -321,9 +309,7 @@ describe ('Fused recipes endpoints', function() {
             const testUsers = makeUsersArray();
             
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             it ('Responds with 404', () => {
@@ -331,7 +317,7 @@ describe ('Fused recipes endpoints', function() {
 
                 return supertest(app)
                     .get(`/api/recipes/${recipeId}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(404, { error: {message: `Recipe does not exist.`}})
             });
         });
@@ -348,9 +334,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert fused recipes', () => {
@@ -365,7 +349,7 @@ describe ('Fused recipes endpoints', function() {
 
                 return supertest(app)
                     .delete(`/api/recipes/${idToRemove}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(204)
                     .then(res => {
                         supertest(app)
@@ -381,9 +365,7 @@ describe ('Fused recipes endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
             
             it ('Responds with 404', () => {
@@ -391,7 +373,7 @@ describe ('Fused recipes endpoints', function() {
 
                 return supertest(app)
                     .patch(`/api/recipes/${recipeId}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(404, {
                         error: {message: `Recipe does not exist.`}
                     })
@@ -410,9 +392,7 @@ describe ('Fused recipes endpoints', function() {
             });
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert fused recipes', () => {
@@ -438,7 +418,7 @@ describe ('Fused recipes endpoints', function() {
                 return supertest(app)
                     .patch(`/api/recipes/${idToUpdate}`)
                     .send(updatedRecipe)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(204)
                     .then(res => {
                         supertest(app)
@@ -453,7 +433,7 @@ describe ('Fused recipes endpoints', function() {
                 return supertest(app)
                     .patch(`/api/recipes/${idToUpdate}`)
                     .send({badField: 'bar'})
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(400, {
                         error: {
                             message: `Request body must contain updates to 'fused_name', 'fuse_ingredients', or 'fuse_steps'.`
@@ -474,7 +454,7 @@ describe ('Fused recipes endpoints', function() {
                         ...updateRecipe,
                         ignore: 'Blah'
                     })
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(204)
                     .then(res => {
                         supertest(app)

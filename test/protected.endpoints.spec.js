@@ -4,7 +4,7 @@ const app = require('../src/app');
 const {makeRecipesArray} = require('./recipe.fixtures');
 const {makeUsersArray} = require('./users.fixtures');
 const {makeCuisinesArray} = require('./cuisine.fixtures');
-const {makeAuthHeader} = require('./test-helpers');
+const helpers = require('./test-helpers');
 const supertest = require('supertest');
 
 describe ('Protected Endpoints', function() {
@@ -103,7 +103,7 @@ describe ('Protected Endpoints', function() {
                 const unAuthCreds = {user_name: '', password: ''}
 
                 return endpoint.method(endpoint.path)
-                    .set('Authorization', makeAuthHeader(unAuthCreds))
+                    .set('Authorization', helpers.makeAuthHeader(unAuthCreds))
                     .expect(401, {error: `Unauthorized request`})
             });
 
@@ -112,7 +112,7 @@ describe ('Protected Endpoints', function() {
 
                 return supertest(app)
                     .get(`/api/recipes/1`)
-                    .set('Authorization', makeAuthHeader(invalidUserName))
+                    .set('Authorization', helpers.makeAuthHeader(invalidUserName))
                     .expect(401, {error: `Unauthorized request`})
             });
 
@@ -121,7 +121,7 @@ describe ('Protected Endpoints', function() {
 
                 return supertest(app)
                     .get(`/api/recipes/1`)
-                    .set('Authorization', makeAuthHeader(invalidPassword))
+                    .set('Authorization', helpers.makeAuthHeader(invalidPassword))
                     .expect(401, {error: `Unauthorized request`})
             });
         });

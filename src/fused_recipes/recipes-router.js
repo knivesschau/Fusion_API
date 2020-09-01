@@ -43,6 +43,8 @@ fuseRouter
             }
         }
 
+        newRecipe.author_id = req.user.user_id;
+
         FuseService.insertRecipe(
             req.app.get('db'),
             newRecipe

@@ -3,7 +3,7 @@ const knex = require('knex');
 const app = require('../src/app');
 const {makeCuisinesArray} = require('./cuisine.fixtures');
 const {makeUsersArray} = require('./users.fixtures');
-const {makeAuthHeader} = require('./test-helpers');
+const helpers = require('./test-helpers');
 const supertest = require('supertest');
 
 describe ('Cuisine endpoints', function() {
@@ -21,22 +21,24 @@ describe ('Cuisine endpoints', function() {
 
     beforeEach('remove cuisines table', () => db('cuisines').delete());
 
-    beforeEach('remove fused users table', () => db('fusion_users').delete());
+    before('remove fused users table', () => db('fusion_users').delete());
+
+    afterEach('cleanup cuisines', () => db('cuisines').delete());
+
+    afterEach('clean up fusion users table', () => db('fusion_users').delete());
 
     describe (`GET /api/cuisines`, () => {
         context(`Given no cuisines in the database`, () => {
             const testUsers = makeUsersArray();
 
-            beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+            before('insert test users', () => {
+                helpers.seedUsers(db, testUsers)
             });
 
             it ('Reponds with 200, but with no cuisines', () => {
                 return supertest(app)
                     .get('/api/cuisines')
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, [])
             });
         });
@@ -45,10 +47,8 @@ describe ('Cuisine endpoints', function() {
             const testCuisines = makeCuisinesArray();
             const testUsers = makeUsersArray();
 
-            beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+            before('insert test users', () => {
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert cuisines into database', () => {
@@ -60,7 +60,7 @@ describe ('Cuisine endpoints', function() {
             it ('GET /api/cuisines responds with 200 and with all cuisines styles', () => {
                 return supertest(app)
                     .get('/api/cuisines')
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, testCuisines)
             });
         });
@@ -71,9 +71,7 @@ describe ('Cuisine endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             it ('Responds with 404', () => {
@@ -81,7 +79,7 @@ describe ('Cuisine endpoints', function() {
 
                 return supertest(app)
                     .get(`/api/cuisines/${cuisineId}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(404, {error: {message: `Cuisine does not exist.`}})
             });
         });
@@ -91,9 +89,7 @@ describe ('Cuisine endpoints', function() {
             const testUsers = makeUsersArray();
 
             beforeEach('insert test users', () => {
-                return db
-                    .into('fusion_users')
-                    .insert(testUsers)
+                helpers.seedUsers(db, testUsers)
             });
 
             beforeEach('insert cuisines into database', () => {
@@ -108,7 +104,7 @@ describe ('Cuisine endpoints', function() {
 
                 return supertest(app)
                     .get(`/api/cuisines/${cuisineId}`)
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                     .expect(200, expectedCuisine)
             });
         });

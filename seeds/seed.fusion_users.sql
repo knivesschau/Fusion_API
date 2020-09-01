@@ -7,10 +7,10 @@ TRUNCATE
 
 INSERT INTO fusion_users (user_name, password) (
     VALUES
-        ('test_user1', 'testerPassword123'),
-        ('test_user2', 'passwordTester431'),
-        ('test_user3', 'IloveTestData35'),
-        ('test_user4', 'MockDataFan32')
+        ('test_user1', '$2a$14$F.w/EI3k1LDymTaFUJ8iO.47MQcRubTs9sGrSF/Hlc6oJwU/VJWl2'),
+        ('test_user2', '$2a$14$Dkqbdnp34P7fxIFisHMZC.2RgZxPLSZzaMQJ2/zpXAUGQGFVv8G/y'),
+        ('test_user3', '$2a$14$ZBI5foZClrkBsa9OLqWT/.qd2hXg2iy18O7C7VSpZWmdXPm/E0AyW'),
+        ('test_user4', '$2a$14$GgdxBPbi579w/w6P55v49OmeY/UilS8VvbJ4rk92QImoUM1Lg1/LS')
 );
 
 INSERT INTO fused_recipes (fused_name, fuse_ingredients, fuse_steps, base_cuisine, fuse_cuisine, author_id) (
