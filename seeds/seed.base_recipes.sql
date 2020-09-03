@@ -125,8 +125,7 @@ INSERT INTO base_recipes(base_name, ingredients, steps, cuisine_id)
         'Combine eggs, salt, cayenne, parsley, thyme, and white cheddar cheese in a small bowl; Beat with a fork until combined.
         Heat oil in a small, nonstick pan over medium heat. 
         Pour the egg mixture into the hot pan and use a rubber spatula to begin scrambling the eggs, moving constantly and scraping the sides of the pan as needed; Reduce heat to low when eggs start to come together.
-        Continue cooking eggs, stirring slowly but constantly, turn off heat when eggs have a very wet and soft consistency.
-        Tilt the pan towards you, pushing all the eggs together to the bottom edge of the pan.
+        Continue cooking eggs, stirring slowly but constantly, turn off heat when eggs have a very wet and soft consistency. Tilt the pan towards you, pushing all the eggs together to the bottom edge of the pan.
         With the spatula, go around the edges of the pan, tucking in and smoothing out the edges to form the eggs into a moist and slightly firmer omelette.
         Turn heat back on to medium and cook omelette for about 15 seconds; Remove from heat and carefully flop over onto a warm plate.',
 
@@ -136,7 +135,8 @@ INSERT INTO base_recipes(base_name, ingredients, steps, cuisine_id)
         'Pizza Margherita',
 
         '3 1/2 cups all-purpose flour 
-        1 teaspoon salt. 1 cup water 
+        1 teaspoon salt
+        1 cup water 
         1 (.25 ounce) package active dry yeast 
         1 pinch white sugar
         1/4 cup flour, for dusting
