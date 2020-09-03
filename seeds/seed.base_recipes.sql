@@ -76,7 +76,7 @@ INSERT INTO base_recipes(base_name, ingredients, steps, cuisine_id)
         2 green chile peppers, minced
         2 Roma tomatoes, diced
         1/2 cup tomato paste
-        1/4 cup water. 
+        1/4 cup water
         1 teaspoon garam masala
         1/2 teaspoon ground coriander
         1/2 teaspoon ground turmeric
@@ -208,7 +208,8 @@ INSERT INTO base_recipes(base_name, ingredients, steps, cuisine_id)
         2 medium whole tomatoes, chopped 
         1/4 (7 ounce) can chipotle peppers in adobo sauce, or to taste
         1 tablespoon water, or as needed 
-        24 (5 inch) corn tortillas. 1/2 bunch cilantro, chopped
+        24 (5 inch) corn tortillas
+        1/2 bunch cilantro, chopped
         1 bunch radishes, halved',
 
         'Place 1/2 chopped onion, 2 cloves garlic, parsley, oregano, paprika, anise seed, black pepper, cumin, sage, thyme, bay leaves, cloves, soy sauce, vinegar, orange juice, and lime juice in a blender; Pulse until a very well-blended paste is achieved, scraping down sides as needed. 
@@ -230,7 +231,8 @@ INSERT INTO base_recipes(base_name, ingredients, steps, cuisine_id)
         1 clove garlic
         4 dried California chile pods
         2 cups water
-        1 1/2 teaspoons salt. 2 cups masa harina 
+        1 1/2 teaspoons salt 
+        2 cups masa harina 
         1 (10.5 ounce) can beef broth
         1 teaspoon baking powder
         1/2 teaspoon salt
