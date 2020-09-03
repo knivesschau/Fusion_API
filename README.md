@@ -8,7 +8,7 @@
 <br>
 <a href="https://afternoon-anchorage-79162.herokuapp.com/">Heroku API Server</a>
 
-Fusion is an online recipe book tailor-made for chefs at all levels, allowing them to create and save recipe modifications, substitutions, and tweaks to their favorite culinary dishes. Users can create their own personalized recipe by book by having access to over 10 starting recipes across 7 exciting culinary styles.
+Fusion is an online recipe book tailor-made for chefs at all levels, allowing them to create and save recipe modifications, substitutions, and tweaks to their favorite culinary dishes. 
 
 ## Image and Recipe Acknowledgements
 
@@ -18,7 +18,7 @@ This app uses free vectors and images designed or hosted by FreePik. Specific im
 <br>
 <a href="https://www.freepik.com/vectors/food">Food vector created by macrovector_official - www.freepik.com</a>
 
-All starting recipes for Fusion come from <a href="https://www.allrecipes.com/">All Recipes</a>. This app was created primarily for educational and recreational purposes and does not seek a profit from it. 
+All starting recipes for Fusion were sourced and took inspiration from ones hosted at <a href="https://www.allrecipes.com/">All Recipes</a>. This app was created primarily for educational and recreational purposes and does not seek a profit from it. 
 
 ## API Endpoints
 ```
