@@ -314,7 +314,8 @@ INSERT INTO base_recipes(base_name, ingredients, steps, cuisine_id)
         1 teaspoon salt
         1/4 teaspoon ground black pepper 
         1 pinch ground cinnamon
-        5 large eggs. 1/4 cup milk 
+        5 large eggs 
+        1/4 cup milk 
         1/4 cup grated parmesan cheese 
         1/4 cup shredded cheddar cheese',
 
