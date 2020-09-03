@@ -294,8 +294,7 @@ INSERT INTO base_recipes(base_name, ingredients, steps, cuisine_id)
 
         'Preheat oven to 400°F.
         Spread potatoes, zucchini, and red onions onto a 9x13-inch baking dish or sheet and cover with the pureed tomatoes, olive oil, parsley, salt, and freshly ground pepper, mixing all ingredients together so that the vegetables are evenly coated.
-        Bake vegetables in preheated oven, stirring after 1 hour and cooking until vegetables are tender and all moisture has evaporated (about 90 minutes); Cool slightly before serving or serve at room temperature. 
-        ',
+        Bake vegetables in preheated oven, stirring after 1 hour and cooking until vegetables are tender and all moisture has evaporated (about 90 minutes); Cool slightly before serving or serve at room temperature.',
 
         6
     ),
@@ -321,10 +320,8 @@ INSERT INTO base_recipes(base_name, ingredients, steps, cuisine_id)
 
         'Sprinkle 1/2 teaspoon of salt over zucchini, let sit for 10 minutes to drain water.
         Preheat oven to 450°F and line pastry shell with two layers of heavy-duty aluminum foil.
-        Bake pastry shell in preheated oven for 5 minutes; Remove foil and bake for 5 more minutes or until shell is lightly browned.
-        Reduce oven heat to 350°F. 
-        Melt butter in a large skillet over medium heat; Cook and stir onion, green pepper, tomatoes, mushrooms, garlic, and zucchini until just tender (about 5 minutes) and add in curry powder, 1/2 teaspoon salt, pepper, and cinnamon. 
-        Spoon vegetable mixture into crust; 
+        Bake pastry shell in preheated oven for 5 minutes; Remove foil and bake for 5 more minutes or until shell is lightly browned. Reduce oven heat to 350°F. 
+        Melt butter in a large skillet over medium heat; Cook and stir onion, green pepper, tomatoes, mushrooms, garlic, and zucchini until just tender (about 5 minutes) and add in curry powder, 1/2 teaspoon salt, pepper, and cinnamon. Spoon vegetable mixture into crust. 
         In a bowl, beat eggs and stir in the milk, parmesan cheese, and cheddar cheese; Carefully pour egg mixture over vegetables.
         Bake in preheated oven for 40-45 minutes, let stand 5 minutes before cutting.',
 
